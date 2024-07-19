@@ -157,7 +157,11 @@ class TimeTrace {
 
       protected:
         // Determines the number of events we can retain as an exponent of 2
+#ifndef _TIMETRACE_BUFFER_SIZE_EXP
         static const uint8_t BUFFER_SIZE_EXP = 13;
+#else
+        static const uint8_t BUFFER_SIZE_EXP = _TIMETRACE_BUFFER_SIZE_EXP;
+#endif
 
         // Total number of events that we can retain any given time.
         static const uint32_t BUFFER_SIZE = 1 << BUFFER_SIZE_EXP;
