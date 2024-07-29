@@ -6,9 +6,10 @@ highly-performant software systems running on x86\_64.
 ## How to Use It
 
 1. Clone the repository.
+	```
 
-        git clone https://github.com/PlatformLab/PerfUtils.git
-
+	git clone https://github.com/megaeth-labs/PerfUtils.git
+	```
 2. Build the library.
 
         pushd PerfUtils
