@@ -332,7 +332,7 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s, bo
             if (s->length() != 0) {
                 s->append("\n");
             }
-            snprintf(message, sizeof(message), "%8.1f ns (+%6.1f ns): ", ns,
+            snprintf(message, sizeof(message), "%9.1f ns (+%9.1f ns): ", ns,
                      ns - prevTime);
             s->append(message);
 #pragma GCC diagnostic push
@@ -359,7 +359,7 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s, bo
                      event->arg1, event->arg2, event->arg3);
             }
 #pragma GCC diagnostic pop
-            fprintf(output, "%8.1f ns (+%6.1f ns): %s", ns, ns - prevTime,
+            fprintf(output, "%9.1f ns (+%9.1f ns): %s", ns, ns - prevTime,
                     message);
             fputc('\n', output);
         }
