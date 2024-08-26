@@ -50,6 +50,7 @@ class TimeTrace {
 
     static void setOutputFileName(const char* filename);
     static void print();
+    static void print_with_indent();
 
     /**
      * Record an event in a thread-local buffer, creating a new buffer
@@ -75,6 +76,8 @@ class TimeTrace {
      *      Argument to use when printing a message about this event.
      * \param arg3
      *      Argument to use when printing a message about this event.
+     *      when indentation is on, this argument is treated by the printer as 
+     *      the number of indentation.
      */
     static inline void record(uint64_t timestamp, const char* format,
                               uint32_t arg0 = 0, uint32_t arg1 = 0,
@@ -101,7 +104,7 @@ class TimeTrace {
     TimeTrace();
     static void createThreadBuffer();
     static void printInternal(std::vector<TimeTrace::Buffer*>* traces,
-                              std::string* s);
+                              std::string* s, bool ind=false);
 
     // Points to a private per-thread TimeTrace::Buffer object; NULL means
     // no such object has been created yet for the current thread.

@@ -82,7 +82,15 @@ TimeTrace::print() {
     printInternal(&buffers, NULL);
 }
 
-/**
+void
+TimeTrace::print_with_indent() {
+    std::vector<TimeTrace::Buffer*> buffers;
+    {
+        std::lock_guard<std::mutex> guard(mutex);
+        buffers = threadBuffers;
+    }
+    printInternal(&buffers, NULL, true);
+} /*
  * Construct a TimeTrace::Buffer.
  */
 TimeTrace::Buffer::Buffer() : nextIndex(0), activeReaders(0), events() {
@@ -208,7 +216,7 @@ TimeTrace::reset() {
  *      time trace. If NULL, the trace will be printed on the system log.
  */
 void
-TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
+TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s, bool ind) {
     bool printedAnything = false;
     for (uint32_t i = 0; i < buffers->size(); i++) {
         buffers->at(i)->activeReaders.add(1);
@@ -329,15 +337,27 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
             s->append(message);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-            snprintf(message, sizeof(message), event->format, event->arg0,
+            if (ind) {
+                std::string format_ind = std::string(std::max<uint32_t>(event->arg3, 0), ' ') + event->format;
+                snprintf(message, sizeof(message), format_ind.c_str(), event->arg0,
+                     event->arg1, event->arg2);
+            } else {
+                snprintf(message, sizeof(message), event->format, event->arg0,
                      event->arg1, event->arg2, event->arg3);
+            }
 #pragma GCC diagnostic pop
             s->append(message);
         } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-            snprintf(message, sizeof(message), event->format, event->arg0,
+            if (ind) {
+                std::string format_ind = std::string(std::max<uint32_t>(event->arg3, 0), ' ') + event->format;
+                snprintf(message, sizeof(message), format_ind.c_str(), event->arg0,
+                     event->arg1, event->arg2);
+            } else {
+                snprintf(message, sizeof(message), event->format, event->arg0,
                      event->arg1, event->arg2, event->arg3);
+            }
 #pragma GCC diagnostic pop
             fprintf(output, "%8.1f ns (+%6.1f ns): %s", ns, ns - prevTime,
                     message);
